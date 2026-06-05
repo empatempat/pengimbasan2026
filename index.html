@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Literata:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background-color:#8B1A1A;
+    background-image:repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 28px,
+      rgba(0,0,0,0.18) 28px,
+      rgba(0,0,0,0.18) 36px
+    );
+    font-family:'DM Sans',sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 16px;
+  }
+
+  /* STAMP FRAME */
+  .stamp-outer{
+    position:relative;
+    background:#FDF6E3;
+    padding:0;
+    max-width:680px;
+    width:100%;
+    border-radius:4px;
+    border:3px solid #1A5C3A;
+  }
+  .stamp-outer::before{
+    content:'';
+    position:absolute;
+    top:-1px; left:-1px; right:-1px; bottom:-1px;
+    background:
+      radial-gradient(circle at 0 0,#8B1A1A 12px,transparent 12px),
+      radial-gradient(circle at 100% 0,#8B1A1A 12px,transparent 12px),
+      radial-gradient(circle at 0 100%,#8B1A1A 12px,transparent 12px),
+      radial-gradient(circle at 100% 100%,#8B1A1A 12px,transparent 12px);
+    pointer-events:none;
+    z-index:10;
+  }
+
+  /* Zigzag perforations via box-shadow on pseudo */
+  .perf-top,.perf-bottom{height:14px;background:transparent;position:relative;overflow:visible}
+  .perf-top{border-bottom:2px dashed #1A5C3A}
+  .perf-bottom{border-top:2px dashed #1A5C3A}
+
+  /* HEADER SECTION */
+  .stamp-header{
+    padding:18px 24px 12px;
+    text-align:center;
+    position:relative;
+  }
+  .stamp-label{
+    font-family:'DM Sans',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:4px;
+    color:#1A5C3A;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .stamp-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(22px,5vw,36px);
+    font-weight:900;
+    color:#8B1A1A;
+    line-height:1.05;
+    text-shadow:2px 2px 0 rgba(139,26,26,0.15);
+  }
+  .stamp-subtitle{
+    font-family:'Literata',serif;
+    font-size:13px;
+    color:#4A3728;
+    margin-top:6px;
+    font-style:italic;
+  }
+
+  /* MEGA MENDUNG cloud pattern strip */
+  .mendung-strip{
+    height:40px;
+    background:#1A5C3A;
+    overflow:hidden;
+    position:relative;
+  }
+  .mendung-strip svg{width:100%;height:100%}
+
+  /* GAME AREA */
+  .game-area{
+    padding:20px 24px 24px;
+    position:relative;
+  }
+
+  /* Scene illustration banner */
+  .scene-banner{
+    border-radius:8px;
+    overflow:hidden;
+    margin-bottom:16px;
+    position:relative;
+    background:#1A4A6E;
+    min-height:90px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .scene-banner svg{width:100%;display:block}
+
+  /* Stats bar */
+  .stats-bar{
+    display:flex;
+    gap:10px;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+  }
+  .stat-pill{
+    background:#1A5C3A;
+    color:#FDF6E3;
+    font-size:12px;
+    font-weight:600;
+    padding:4px 12px;
+    border-radius:20px;
+    letter-spacing:0.5px;
+  }
+  .stat-pill span{color:#F5C842}
+  .stat-pill.danger{background:#8B1A1A}
+  .stat-pill.neutral{background:#4A3728}
+
+  /* Chapter card */
+  .chapter-card{
+    background:#FFFDF5;
+    border:2px solid #1A5C3A;
+    border-radius:8px;
+    padding:18px 20px;
+    margin-bottom:16px;
+    position:relative;
+  }
+  .chapter-label{
+    font-family:'DM Sans',sans-serif;
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:3px;
+    color:#8B1A1A;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .chapter-title{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(16px,3vw,22px);
+    font-weight:700;
+    color:#1A2E1A;
+    margin-bottom:10px;
+    line-height:1.2;
+  }
+  .chapter-text{
+    font-family:'Literata',serif;
+    font-size:14.5px;
+    color:#3A2A1A;
+    line-height:1.75;
+  }
+
+  /* Question box */
+  .question-box{
+    background:#1A5C3A;
+    border-radius:8px;
+    padding:14px 18px;
+    margin:14px 0;
+    color:#FDF6E3;
+  }
+  .question-box p{
+    font-family:'DM Sans',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    line-height:1.6;
+  }
+  .question-box .formula{
+    background:rgba(255,255,255,0.12);
+    border-radius:6px;
+    padding:8px 14px;
+    margin-top:10px;
+    font-family:'Literata',serif;
+    font-size:15px;
+    text-align:center;
+    color:#F5C842;
+    font-style:italic;
+  }
+
+  /* Answer options */
+  .options-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+  }
+  .option-btn{
+    background:#FDF6E3;
+    border:2px solid #1A5C3A;
+    border-radius:8px;
+    padding:12px 14px;
+    cursor:pointer;
+    text-align:left;
+    transition:all 0.15s;
+    font-family:'DM Sans',sans-serif;
+    font-size:13.5px;
+    color:#1A2E1A;
+    font-weight:500;
+    line-height:1.4;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    position:relative;
+  }
+  .option-btn:hover{
+    background:#1A5C3A;
+    color:#FDF6E3;
+    transform:translateY(-1px);
+  }
+  .option-btn:hover .opt-letter{
+    background:#F5C842;
+    color:#1A2E1A;
+  }
+  .opt-letter{
+    background:#1A5C3A;
+    color:#FDF6E3;
+    font-size:12px;
+    font-weight:700;
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    margin-top:1px;
+  }
+  .option-btn.correct{background:#1A5C3A;color:#FDF6E3;border-color:#1A5C3A}
+  .option-btn.correct .opt-letter{background:#F5C842;color:#1A2E1A}
+  .option-btn.wrong{background:#8B1A1A;color:#FDF6E3;border-color:#8B1A1A}
+  .option-btn.wrong .opt-letter{background:#F5C842;color:#1A2E1A}
+  .option-btn:disabled{pointer-events:none}
+
+  /* Feedback panel */
+  .feedback-panel{
+    border-radius:8px;
+    padding:14px 16px;
+    margin-top:14px;
+    display:none;
+    animation:fadeSlide 0.3s ease;
+  }
+  .feedback-panel.show{display:block}
+  .feedback-panel.success{background:#E8F5E9;border:2px solid #1A5C3A}
+  .feedback-panel.fail{background:#FDECEA;border:2px solid #8B1A1A}
+  .feedback-title{
+    font-family:'Playfair Display',serif;
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .feedback-panel.success .feedback-title{color:#1A5C3A}
+  .feedback-panel.fail .feedback-title{color:#8B1A1A}
+  .feedback-text{
+    font-family:'Literata',serif;
+    font-size:13.5px;
+    color:#3A2A1A;
+    line-height:1.65;
+  }
+  .explosion{font-size:28px;text-align:center;margin:8px 0}
+
+  /* Action buttons */
+  .action-row{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .btn-primary{
+    background:#1A5C3A;
+    color:#FDF6E3;
+    border:none;
+    border-radius:8px;
+    padding:11px 22px;
+    font-family:'DM Sans',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    letter-spacing:0.5px;
+    transition:all 0.15s;
+    flex:1;
+  }
+  .btn-primary:hover{background:#0F3D26;transform:translateY(-1px)}
+  .btn-secondary{
+    background:#FDF6E3;
+    color:#8B1A1A;
+    border:2px solid #8B1A1A;
+    border-radius:8px;
+    padding:11px 22px;
+    font-family:'DM Sans',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    cursor:pointer;
+    letter-spacing:0.5px;
+    transition:all 0.15s;
+    flex:1;
+  }
+  .btn-secondary:hover{background:#8B1A1A;color:#FDF6E3}
+
+  /* Progress bar */
+  .progress-wrap{margin-bottom:14px}
+  .progress-label{
+    font-size:11px;
+    font-weight:600;
+    color:#4A3728;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    margin-bottom:5px;
+  }
+  .progress-track{
+    height:8px;
+    background:#E8DEC8;
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#1A5C3A,#F5C842);
+    border-radius:4px;
+    transition:width 0.4s ease;
+  }
+
+  /* WIN screen */
+  .win-screen{
+    text-align:center;
+    padding:20px 10px;
+    display:none;
+  }
+  .win-screen.show{display:block}
+  .win-trophy{font-size:48px;margin-bottom:10px}
+  .win-title{
+    font-family:'Playfair Display',serif;
+    font-size:28px;
+    font-weight:900;
+    color:#1A5C3A;
+    margin-bottom:8px;
+  }
+  .win-text{
+    font-family:'Literata',serif;
+    font-size:14px;
+    color:#4A3728;
+    line-height:1.7;
+    margin-bottom:18px;
+  }
+  .score-badge{
+    display:inline-block;
+    background:#1A5C3A;
+    color:#F5C842;
+    font-family:'Playfair Display',serif;
+    font-size:22px;
+    font-weight:700;
+    padding:12px 30px;
+    border-radius:40px;
+    margin-bottom:18px;
+  }
+
+  /* STAMP FOOTER */
+  .stamp-footer{
+    background:#1A5C3A;
+    padding:10px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .stamp-footer-text{
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:2px;
+    color:#F5C842;
+    text-transform:uppercase;
+  }
+  .stamp-denom{
+    font-family:'Playfair Display',serif;
+    font-size:20px;
+    font-weight:700;
+    color:#FDF6E3;
+  }
+
+  @keyframes fadeSlide{
+    from{opacity:0;transform:translateY(8px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    25%{transform:translateX(-6px)}
+    75%{transform:translateX(6px)}
+  }
+  .shake{animation:shake 0.3s ease}
+</style>
+</head>
+<body>
+
+<div class="stamp-outer">
+
+  <!-- HEADER -->
+  <div class="stamp-header">
+    <div class="stamp-label">Petualangan Ilmu Pengetahuan</div>
+    <div class="stamp-title">Misteri Kota Uap</div>
+    <div class="stamp-subtitle">Teori Kinetik Gas — Sebuah Petualangan Fisika</div>
+  </div>
+
+  <!-- MEGA MENDUNG STRIP -->
+  <div class="mendung-strip">
+    <svg viewBox="0 0 680 40" preserveAspectRatio="xMidYMid slice">
+      <!-- Mega Mendung awan stylized -->
+      <defs>
+        <radialGradient id="cg1" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#2A7A4A"/>
+          <stop offset="100%" stop-color="#1A5C3A"/>
+        </radialGradient>
+      </defs>
+      <rect width="680" height="40" fill="#1A5C3A"/>
+      <!-- repeating cloud bumps -->
+      <g fill="rgba(245,200,66,0.25)">
+        <ellipse cx="40" cy="40" rx="30" ry="18"/>
+        <ellipse cx="80" cy="40" rx="24" ry="14"/>
+        <ellipse cx="120" cy="40" rx="30" ry="18"/>
+        <ellipse cx="160" cy="40" rx="24" ry="14"/>
+        <ellipse cx="200" cy="40" rx="30" ry="18"/>
+        <ellipse cx="240" cy="40" rx="24" ry="14"/>
+        <ellipse cx="280" cy="40" rx="30" ry="18"/>
+        <ellipse cx="320" cy="40" rx="24" ry="14"/>
+        <ellipse cx="360" cy="40" rx="30" ry="18"/>
+        <ellipse cx="400" cy="40" rx="24" ry="14"/>
+        <ellipse cx="440" cy="40" rx="30" ry="18"/>
+        <ellipse cx="480" cy="40" rx="24" ry="14"/>
+        <ellipse cx="520" cy="40" rx="30" ry="18"/>
+        <ellipse cx="560" cy="40" rx="24" ry="14"/>
+        <ellipse cx="600" cy="40" rx="30" ry="18"/>
+        <ellipse cx="640" cy="40" rx="24" ry="14"/>
+        <ellipse cx="680" cy="40" rx="24" ry="14"/>
+      </g>
+      <!-- inner smaller bumps -->
+      <g fill="rgba(245,200,66,0.15)">
+        <ellipse cx="60" cy="40" rx="20" ry="12"/>
+        <ellipse cx="100" cy="40" rx="20" ry="12"/>
+        <ellipse cx="140" cy="40" rx="20" ry="12"/>
+        <ellipse cx="180" cy="40" rx="20" ry="12"/>
+        <ellipse cx="220" cy="40" rx="20" ry="12"/>
+        <ellipse cx="260" cy="40" rx="20" ry="12"/>
+        <ellipse cx="300" cy="40" rx="20" ry="12"/>
+        <ellipse cx="340" cy="40" rx="20" ry="12"/>
+        <ellipse cx="380" cy="40" rx="20" ry="12"/>
+        <ellipse cx="420" cy="40" rx="20" ry="12"/>
+        <ellipse cx="460" cy="40" rx="20" ry="12"/>
+        <ellipse cx="500" cy="40" rx="20" ry="12"/>
+        <ellipse cx="540" cy="40" rx="20" ry="12"/>
+        <ellipse cx="580" cy="40" rx="20" ry="12"/>
+        <ellipse cx="620" cy="40" rx="20" ry="12"/>
+        <ellipse cx="660" cy="40" rx="20" ry="12"/>
+      </g>
+      <!-- Decorative text -->
+      <text x="340" y="26" text-anchor="middle" fill="rgba(245,200,66,0.7)" font-size="10" font-family="'DM Sans', sans-serif" font-weight="600" letter-spacing="5">TEORI KINETIK GAS</text>
+    </svg>
+  </div>
+
+  <!-- GAME AREA -->
+  <div class="game-area">
+
+    <!-- Progress -->
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-label">Kemajuan Misi</div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="stats-bar" id="statsBar">
+      <div class="stat-pill">Babak: <span id="chapterNum">1</span>/7</div>
+      <div class="stat-pill">Nyawa: <span id="livesNum">❤️❤️❤️</span></div>
+      <div class="stat-pill neutral">Peran: <span style="color:#F5C842">Ahli Fisika</span></div>
+    </div>
+
+    <!-- Main game content -->
+    <div id="gameContent"></div>
+
+  </div>
+
+  <!-- MEGA MENDUNG STRIP bottom -->
+  <div class="mendung-strip" style="transform:scaleY(-1)">
+    <svg viewBox="0 0 680 40" preserveAspectRatio="xMidYMid slice">
+      <rect width="680" height="40" fill="#1A5C3A"/>
+      <g fill="rgba(245,200,66,0.25)">
+        <ellipse cx="40" cy="40" rx="30" ry="18"/><ellipse cx="80" cy="40" rx="24" ry="14"/>
+        <ellipse cx="120" cy="40" rx="30" ry="18"/><ellipse cx="160" cy="40" rx="24" ry="14"/>
+        <ellipse cx="200" cy="40" rx="30" ry="18"/><ellipse cx="240" cy="40" rx="24" ry="14"/>
+        <ellipse cx="280" cy="40" rx="30" ry="18"/><ellipse cx="320" cy="40" rx="24" ry="14"/>
+        <ellipse cx="360" cy="40" rx="30" ry="18"/><ellipse cx="400" cy="40" rx="24" ry="14"/>
+        <ellipse cx="440" cy="40" rx="30" ry="18"/><ellipse cx="480" cy="40" rx="24" ry="14"/>
+        <ellipse cx="520" cy="40" rx="30" ry="18"/><ellipse cx="560" cy="40" rx="24" ry="14"/>
+        <ellipse cx="600" cy="40" rx="30" ry="18"/><ellipse cx="640" cy="40" rx="24" ry="14"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="stamp-footer">
+    <div class="stamp-footer-text">Budaya Nusantara × Sains</div>
+    <div class="stamp-denom">TKG</div>
+    <div class="stamp-footer-text">Fisika SMA</div>
+  </div>
+
+</div>
+
+<script>
+const SCENES = [
+  {
+    id:0,
+    type:'intro',
+    scene:'🔬 Laboratorium Kota Uap',
+    chapter:'Pembukaan',
+    title:'Selamat Datang, Ahli Fisika!',
+    text:`Tahun 2045. Kota Nusantara Raya dilanda krisis: reaktor uap utama kota berperilaku aneh — suhu naik, tekanan berfluktuasi, dan sistem pendingin berhenti. Kamu adalah satu-satunya Ahli Fisika yang bisa menyelamatkan kota!\n\nUntuk masuk ke ruang reaktor, kamu harus melewati 7 pos keamanan. Setiap pos dijaga oleh Penjaga Sains yang akan mengujimu dengan pertanyaan Teori Kinetik Gas.\n\nKamu punya 3 nyawa. Gunakan dengan bijak!`,
+    btnLabel:'Mulai Petualangan!'
+  },
+  {
+    id:1,
+    type:'question',
+    scene:'🏭 Pos 1 — Gerbang Reaktor',
+    chapter:'Babak 1',
+    title:'Asumsi Dasar Gas Ideal',
+    narrative:`Penjaga Pos pertama menghadangmu. Ia memegang tablet dengan diagram molekul yang berputar-putar.\n\n"Sebelum masuk," katanya tegas, "jawab ini: Salah satu asumsi dasar Teori Kinetik Gas adalah..."`,
+    question:'Manakah yang merupakan asumsi Teori Kinetik Gas ideal yang benar?',
+    formula:null,
+    options:[
+      {label:'A', text:'Molekul gas memiliki volume yang signifikan dan saling tarik-menarik satu sama lain', correct:false},
+      {label:'B', text:'Molekul gas bergerak acak, dan tumbukan antar molekul bersifat lenting sempurna', correct:true},
+      {label:'C', text:'Kecepatan semua molekul gas adalah sama pada suhu tertentu', correct:false},
+      {label:'D', text:'Gaya tarik-menarik antar molekul sangat besar dan menentukan tekanan', correct:false},
+    ],
+    successTitle:'Pintu Terbuka!',
+    successText:'Tepat! Dalam Teori Kinetik Gas ideal, molekul dianggap bergerak secara acak dan tumbukan antar molekul bersifat lenting sempurna — artinya energi kinetik total terjaga. Volum molekul dianggap sangat kecil dibanding volum wadah, dan tidak ada gaya antar-molekul.',
+    failTitle:'Pintu Terkunci!',
+    failText:'Jawaban kurang tepat. Gas ideal mengasumsikan: (1) molekul bergerak acak, (2) tumbukan lenting sempurna — energi kinetik terjaga, (3) volum molekul sangat kecil, dan (4) tidak ada gaya tarik-menarik antar molekul. Gas nyata seperti O₂ memiliki gaya van der Waals, itu bedanya!'
+  },
+  {
+    id:2,
+    type:'question',
+    scene:'⚡ Pos 2 — Ruang Generator',
+    chapter:'Babak 2',
+    title:'Tekanan dan Kecepatan Molekul',
+    narrative:`Ruang generator berdengung. Ribuan molekul bergerak dengan kecepatan tinggi. Operator menoleh: "Bagus kamu sampai di sini. Sekarang, tentukan dari mana tekanan gas itu berasal!"`,
+    question:'Menurut Teori Kinetik Gas, tekanan gas pada dinding wadah disebabkan oleh...',
+    formula:null,
+    options:[
+      {label:'A', text:'Gaya gravitasi molekul gas yang menekan ke bawah', correct:false},
+      {label:'B', text:'Tumbukan molekul gas dengan dinding wadah secara terus-menerus', correct:true},
+      {label:'C', text:'Panas yang diserap molekul dari dinding wadah', correct:false},
+      {label:'D', text:'Gaya tarik-menarik antara molekul dengan permukaan dinding', correct:false},
+    ],
+    successTitle:'Generator Aktif!',
+    successText:'Benar! Tekanan gas terjadi karena tumbukan terus-menerus antara molekul-molekul gas dengan dinding wadah. Setiap tumbukan menghasilkan impuls kecil. Jutaan tumbukan per detik menghasilkan gaya neto yang kita ukur sebagai tekanan. Semakin cepat molekul, semakin besar tekanannya!',
+    failTitle:'Korsleting!',
+    failText:'Kurang tepat! Tekanan gas bukan dari gravitasi atau panas, melainkan dari tumbukan molekul dengan dinding. Bayangkan bola-bola kecil yang terus memantul ke tembok — setiap pantul memberikan dorongan. Makin banyak tumbukan per satuan luas per satuan waktu, makin tinggi tekanan gas.'
+  },
+  {
+    id:3,
+    type:'question',
+    scene:'🌡️ Pos 3 — Ruang Kontrol Suhu',
+    chapter:'Babak 3',
+    title:'Hukum Gay-Lussac',
+    narrative:`Alarm berbunyi! Layar menunjukkan suhu ruangan naik drastis dari 27°C ke 127°C. Kepala Teknisi berteriak: "Hitung cepat — tekanan akan naik berapa kali? Volume tetap ya!"`,
+    question:'Suhu gas berubah dari 27°C → 127°C pada volume tetap. Tekanan gas akan menjadi...',
+    formula:'Gay-Lussac: P₁/T₁ = P₂/T₂  (T dalam Kelvin!)',
+    options:[
+      {label:'A', text:'4/3 kali tekanan awal — karena T₁=300K, T₂=400K, maka P₂ = P₁ × 400/300', correct:true},
+      {label:'B', text:'127/27 kali tekanan awal — karena suhu naik dari 27 ke 127 derajat Celsius', correct:false},
+      {label:'C', text:'Tekanan tetap sama — suhu tidak mempengaruhi tekanan jika volume tetap', correct:false},
+      {label:'D', text:'2 kali tekanan awal — karena selisih suhu 100°C', correct:false},
+    ],
+    successTitle:'Sistem Stabil!',
+    successText:'Brilian! Kunci Hukum Gay-Lussac: selalu konversi ke Kelvin!\nT₁ = 27 + 273 = 300 K\nT₂ = 127 + 273 = 400 K\nP₂/P₁ = T₂/T₁ = 400/300 = 4/3\nJadi tekanan naik menjadi 4/3 ≈ 1,33 kali lipat. Pilihan B salah karena menggunakan °C langsung — itu jebakan klasik!',
+    failTitle:'LEDAKAN KECIL! 💥',
+    failText:'Awas jebakan! Hukum Gay-Lussac WAJIB pakai Kelvin, bukan Celsius!\nT₁ = 27 + 273 = 300 K\nT₂ = 127 + 273 = 400 K\nP₂ = P₁ × (400/300) = 4/3 P₁\nSelalu ingat: T(K) = T(°C) + 273. Menggunakan Celsius langsung adalah kesalahan paling sering terjadi!'
+  },
+  {
+    id:4,
+    type:'question',
+    scene:'🔧 Pos 4 — Ruang Pompa',
+    chapter:'Babak 4',
+    title:'Hukum Boyle',
+    narrative:`Di ruang pompa, seorang insinyur sedang panik. Ia memompakan gas ke dalam tabung kecil. "Tolong! Tabung tekanan tinggi ini volumenya 2 liter pada tekanan 1 atm. Jika dikompres menjadi 0,5 liter, berapa tekanannya?"`,
+    question:'Volume gas berubah: 2 L → 0,5 L pada suhu tetap. Tekanan menjadi berapa? (awal P = 1 atm)',
+    formula:'Hukum Boyle: P₁V₁ = P₂V₂  (T tetap)',
+    options:[
+      {label:'A', text:'0,25 atm — karena tekanan berbanding lurus dengan volume', correct:false},
+      {label:'B', text:'2 atm — karena volumenya berkurang setengah dari awal', correct:false},
+      {label:'C', text:'4 atm — karena P₁V₁ = P₂V₂ → P₂ = (1×2)/0,5 = 4 atm', correct:true},
+      {label:'D', text:'8 atm — karena gas terkompres ke seperempat volumenya', correct:false},
+    ],
+    successTitle:'Pompa Berfungsi!',
+    successText:'Tepat sekali! P₁V₁ = P₂V₂ adalah Hukum Boyle.\nP₂ = P₁ × V₁/V₂ = 1 atm × 2 L / 0,5 L = 4 atm\nVolume berkurang 4 kali → tekanan naik 4 kali. Ini prinsip kerja pompa sepeda, alat suntik, dan kompresor udara! Hubungan tekanan-volume adalah BERBANDING TERBALIK saat suhu tetap.',
+    failTitle:'Pompa Bocor! 💨',
+    failText:'Kurang tepat. Ingat Hukum Boyle: P₁V₁ = P₂V₂ (pada suhu konstan).\nP₂ = (1 atm × 2 L) / 0,5 L = 4 atm\nKatanya volume berkurang dari 2 ke 0,5 liter — itu ¼ dari semula, bukan ½. Jadi tekanan naik 4×, bukan 2×. Tekanan dan volume BERBANDING TERBALIK!'
+  },
+  {
+    id:5,
+    type:'question',
+    scene:'⚗️ Pos 5 — Laboratorium Utama',
+    chapter:'Babak 5',
+    title:'Energi Kinetik Rata-rata',
+    narrative:`Di laboratorium utama, sensor mendeteksi suhu gas: 27°C. Profesor muda berteriak: "Kita perlu tahu energi kinetik rata-rata molekulnya! Ini menentukan seberapa cepat reaksi bisa terjadi!"`,
+    question:'Energi kinetik rata-rata molekul gas monoatomik pada suhu 27°C adalah... (k = 1,38 × 10⁻²³ J/K)',
+    formula:'Ēk = (3/2) kT   dimana T dalam Kelvin',
+    options:[
+      {label:'A', text:'Ēk = (3/2) k × 27 ≈ 5,59 × 10⁻²² J  (menggunakan T = 27°C)', correct:false},
+      {label:'B', text:'Ēk = (3/2) k × 300 ≈ 6,21 × 10⁻²¹ J  (menggunakan T = 300 K)', correct:true},
+      {label:'C', text:'Ēk = (3/2) k × 273 ≈ 5,65 × 10⁻²¹ J  (menggunakan T = 273 K)', correct:false},
+      {label:'D', text:'Energi kinetik tidak bergantung pada suhu gas', correct:false},
+    ],
+    successTitle:'Data Akurat!',
+    successText:'Sempurna! T = 27°C + 273 = 300 K\nĒk = (3/2) × 1,38×10⁻²³ × 300 = 6,21 × 10⁻²¹ J\nIngat: faktor 3/2 berlaku untuk gas monoatomik (1 atom per molekul, seperti He, Ar). Gas diatomik (N₂, O₂) punya Ēk = (5/2)kT karena lebih banyak derajat kebebasan geraknya!',
+    failTitle:'Kalkulasi Error! ⚠️',
+    failText:'Hampir benar, tapi jangan lupa konversi suhu!\nT = 27°C + 273 = 300 K (bukan 27 K atau 273 K!)\nĒk = (3/2) × 1,38×10⁻²³ J/K × 300 K = 6,21 × 10⁻²¹ J\nPilihan C salah karena menggunakan T = 273 K, seolah-olah 27°C = 0°C. Selalu tambahkan 273 ke nilai °C untuk mendapat Kelvin!'
+  },
+  {
+    id:6,
+    type:'question',
+    scene:'🌀 Pos 6 — Turbin Uap',
+    chapter:'Babak 6',
+    title:'Hukum Charles',
+    narrative:`Turbin raksasa berputar lambat. "Turbin ini bekerja dengan gas yang volumenya berubah sesuai suhu," jelas Kepala Teknisi. "Pada 300K, volumenya 6 liter. Kita perlu dorong ke 450K. Berapa volume gas nanti?"`,
+    question:'Gas pada P tetap: V₁ = 6 L, T₁ = 300 K → T₂ = 450 K. Volume V₂ = ?',
+    formula:'Hukum Charles: V₁/T₁ = V₂/T₂  (P tetap)',
+    options:[
+      {label:'A', text:'V₂ = 4 L — karena suhu naik, volume turun (berbanding terbalik)', correct:false},
+      {label:'B', text:'V₂ = 9 L — karena V₂ = 6 × (450/300) = 6 × 1,5 = 9 L', correct:true},
+      {label:'C', text:'V₂ = 12 L — karena selisih suhu 150 K ditambahkan ke volume', correct:false},
+      {label:'D', text:'V₂ = 6 L — volume tidak berubah jika tekanan tetap', correct:false},
+    ],
+    successTitle:'Turbin Berputar Penuh!',
+    successText:'Luar biasa! Hukum Charles: V berbanding lurus dengan T (pada P tetap).\nV₂ = V₁ × T₂/T₁ = 6 L × (450/300) = 6 × 1,5 = 9 L\nSuhu naik 1,5 kali → volume juga naik 1,5 kali. Inilah mengapa balon memuai saat dipanaskan, dan mengempis saat didinginkan. Charles menemukan ini saat meneliti balon udara panas!',
+    failTitle:'Turbin Macet! 🔧',
+    failText:'Kurang tepat! Hukum Charles mengatakan V dan T berbanding LURUS (bukan terbalik!) saat tekanan tetap.\nV₂ = V₁ × T₂/T₁ = 6 × (450/300) = 9 L\nSuhu naik → volume naik juga. Ini kebalikan dari Hukum Boyle. Mudah diingat: "Charles = panas → memuai."'
+  },
+  {
+    id:7,
+    type:'question',
+    scene:'🛡️ Pos Terakhir — Inti Reaktor',
+    chapter:'Babak 7 — Final!',
+    title:'Persamaan Gas Ideal — Puncak Petualangan!',
+    narrative:`Kamu berhasil menembus 6 pos! Di hadapanmu kini berdiri inti reaktor yang berdenyut merah. Sistem AI reaktor berbicara: "Aku hanya akan tunduk pada satu yang benar-benar mengerti Gas Ideal. Gas di dalam tabung reaktor: P = 2 atm, V = 10 L, T = 400 K, n = 0,61 mol. Berapa nilai R yang kita gunakan — dan apa artinya?"`,
+    question:'Dari data tabung reaktor: P=2 atm, V=10 L, T=400K, n=0,61 mol. Hitung R menggunakan PV=nRT. Berapakah R dan apa satuannya?',
+    formula:'Persamaan Gas Ideal: PV = nRT',
+    options:[
+      {label:'A', text:'R ≈ 0,082 L·atm/mol·K — ini konstanta gas universal yang benar!', correct:true},
+      {label:'B', text:'R ≈ 8,314 J/mol·K — nilai R dalam satuan SI dengan tekanan Pascal', correct:false},
+      {label:'C', text:'R ≈ 13,1 — tanpa satuan karena R adalah konstanta murni', correct:false},
+      {label:'D', text:'R ≈ 1,64 — karena R = PV/nT = (2×10)/(0,61×400)', correct:false},
+    ],
+    successTitle:'REAKTOR TERKENDALI! 🎉',
+    successText:'GENIUS! R = PV/(nT) = (2 atm × 10 L)/(0,61 mol × 400 K) ≈ 0,082 L·atm/mol·K\nIni adalah nilai R dalam satuan liter-atmosfer. Dalam SI (tekanan Pascal, volume m³), R = 8,314 J/mol·K. Keduanya benar — tergantung satuan yang digunakan! Pilihan D salah karena lupa memasukkan satuan — tanpa satuan, angka tidak bermakna dalam fisika.',
+    failTitle:'Hampir! Reaktor Bergetar! 💥',
+    failText:'Sangat dekat! R = PV/(nT) = (2 atm × 10 L) / (0,61 mol × 400 K) ≈ 0,082 L·atm/mol·K\nNilai R = 8,314 J/mol·K JUGA benar — tapi itu untuk satuan SI (Pascal, meter kubik). Dengan atm dan liter seperti soal ini, R = 0,082 L·atm/mol·K. Kedua nilai sama, beda satuan saja!'
+  }
+];
+
+let currentSceneIdx = 0;
+let lives = 3;
+let score = 0;
+let answeredCorrectly = false;
+let questionScenes = SCENES.filter(s=>s.type==='question');
+let totalQuestions = questionScenes.length;
+let questionsDone = 0;
+
+function getLivesDisplay(){
+  let s='';
+  for(let i=0;i<3;i++) s += i<lives ? '❤️' : '🖤';
+  return s;
+}
+
+function updateStats(){
+  let qNum = currentSceneIdx; // approximately
+  document.getElementById('chapterNum').textContent = Math.max(1, currentSceneIdx);
+  document.getElementById('livesNum').textContent = getLivesDisplay();
+  let pct = Math.round((questionsDone/totalQuestions)*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+
+function renderScene(scene){
+  updateStats();
+  const gc = document.getElementById('gameContent');
+
+  if(scene.type==='intro'){
+    gc.innerHTML = `
+      <div class="scene-banner">
+        ${getSceneSVG('intro')}
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-label">${scene.chapter}</div>
+        <div class="chapter-title">${scene.title}</div>
+        <div class="chapter-text">${scene.text.replace(/\n/g,'<br><br>')}</div>
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="nextScene()">${scene.btnLabel}</button>
+      </div>
+    `;
+    return;
+  }
+
+  if(scene.type==='question'){
+    let optsHtml = scene.options.map((o,i)=>`
+      <button class="option-btn" id="opt-${i}" onclick="handleAnswer(${i},${o.correct})">
+        <span class="opt-letter">${o.label}</span>
+        <span>${o.text}</span>
+      </button>
+    `).join('');
+
+    gc.innerHTML = `
+      <div class="scene-banner">
+        ${getSceneSVG(scene.id)}
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-label">${scene.chapter}</div>
+        <div class="chapter-title">${scene.title}</div>
+        <div class="chapter-text">${scene.narrative.replace(/\n/g,'<br><br>')}</div>
+        <div class="question-box">
+          <p>${scene.question}</p>
+          ${scene.formula ? `<div class="formula">${scene.formula}</div>` : ''}
+        </div>
+        <div class="options-grid">${optsHtml}</div>
+        <div class="feedback-panel" id="feedback"></div>
+      </div>
+    `;
+    answeredCorrectly = false;
+    return;
+  }
+}
+
+function handleAnswer(idx, correct){
+  if(answeredCorrectly) return;
+  const scene = SCENES[currentSceneIdx];
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach(b=>b.disabled=true);
+
+  const fb = document.getElementById('feedback');
+
+  if(correct){
+    answeredCorrectly = true;
+    questionsDone++;
+    score += 100;
+    btns[idx].classList.add('correct');
+    fb.className = 'feedback-panel success show';
+    fb.innerHTML = `
+      <div class="feedback-title">✅ ${scene.successTitle}</div>
+      <div class="feedback-text">${scene.successText.replace(/\n/g,'<br>')}</div>
+    `;
+    // Show next button
+    const card = document.querySelector('.chapter-card');
+    const row = document.createElement('div');
+    row.className = 'action-row';
+    const isLast = currentSceneIdx === SCENES.length - 1;
+    row.innerHTML = isLast
+      ? `<button class="btn-primary" onclick="showWin()">🏆 Selamatkan Kota!</button>`
+      : `<button class="btn-primary" onclick="nextScene()">Lanjut ke Pos Berikutnya →</button>`;
+    card.appendChild(row);
+    updateStats();
+  } else {
+    lives--;
+    btns[idx].classList.add('wrong');
+    btns[idx].classList.add('shake');
+    fb.className = 'feedback-panel fail show';
+    fb.innerHTML = `
+      <div class="explosion">💥</div>
+      <div class="feedback-title">❌ ${scene.failTitle}</div>
+      <div class="feedback-text">${scene.failText.replace(/\n/g,'<br>')}</div>
+    `;
+    updateStats();
+
+    const card = document.querySelector('.chapter-card');
+    const row = document.createElement('div');
+    row.className = 'action-row';
+
+    if(lives <= 0){
+      row.innerHTML = `<button class="btn-secondary" onclick="resetGame()">🔄 Mulai Ulang dari Awal</button>`;
+    } else {
+      row.innerHTML = `
+        <button class="btn-secondary" onclick="retryQuestion()">🔄 Coba Lagi</button>
+        <button class="btn-primary" onclick="nextScene()">Lewati & Lanjut →</button>
+      `;
+    }
+    card.appendChild(row);
+  }
+}
+
+function retryQuestion(){
+  renderScene(SCENES[currentSceneIdx]);
+}
+
+function nextScene(){
+  currentSceneIdx++;
+  if(currentSceneIdx >= SCENES.length){
+    showWin();
+    return;
+  }
+  renderScene(SCENES[currentSceneIdx]);
+}
+
+function showWin(){
+  document.getElementById('progressFill').style.width='100%';
+  const gc = document.getElementById('gameContent');
+  const stars = score >= 600 ? '⭐⭐⭐' : score >= 400 ? '⭐⭐' : '⭐';
+  gc.innerHTML = `
+    <div class="win-screen show">
+      <div class="win-trophy">🏆</div>
+      <div class="win-title">Kota Nusantara Raya Terselamatkan!</div>
+      <div class="score-badge">${stars} Skor: ${score} poin</div>
+      <div class="win-text">
+        Luar biasa, Ahli Fisika! Kamu berhasil melewati semua pos dan mengendalikan reaktor uap. Kota Nusantara Raya kini aman berkat pemahamanmu tentang <strong>Teori Kinetik Gas</strong>.<br><br>
+        Kamu telah menguasai:<br>
+        ✅ Asumsi Gas Ideal<br>
+        ✅ Tekanan & Tumbukan Molekul<br>
+        ✅ Hukum Gay-Lussac (P/T = konstan)<br>
+        ✅ Hukum Boyle (PV = konstan)<br>
+        ✅ Energi Kinetik Rata-rata (Ēk = 3/2 kT)<br>
+        ✅ Hukum Charles (V/T = konstan)<br>
+        ✅ Persamaan Gas Ideal (PV = nRT)
+      </div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="resetGame()">🔄 Main Lagi!</button>
+      </div>
+    </div>
+  `;
+}
+
+function resetGame(){
+  currentSceneIdx = 0;
+  lives = 3;
+  score = 0;
+  questionsDone = 0;
+  renderScene(SCENES[0]);
+  updateStats();
+}
+
+function getSceneSVG(id){
+  const svgs = {
+    'intro': `<svg viewBox="0 0 640 90" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="90" fill="#0F2D1A"/>
+      <!-- stars/particles -->
+      <circle cx="60" cy="20" r="2" fill="#F5C842" opacity="0.8"/>
+      <circle cx="120" cy="45" r="1.5" fill="#F5C842" opacity="0.6"/>
+      <circle cx="200" cy="15" r="2.5" fill="#F5C842" opacity="0.9"/>
+      <circle cx="300" cy="35" r="1.5" fill="#F5C842" opacity="0.7"/>
+      <circle cx="420" cy="20" r="2" fill="#F5C842" opacity="0.8"/>
+      <circle cx="500" cy="50" r="1.5" fill="#F5C842" opacity="0.6"/>
+      <circle cx="580" cy="25" r="2" fill="#F5C842" opacity="0.9"/>
+      <!-- city skyline -->
+      <rect x="20" y="50" width="30" height="40" fill="#1A5C3A" rx="2"/>
+      <rect x="55" y="35" width="25" height="55" fill="#1A5C3A" rx="2"/>
+      <rect x="85" y="55" width="20" height="35" fill="#1A5C3A" rx="2"/>
+      <rect x="500" y="40" width="25" height="50" fill="#1A5C3A" rx="2"/>
+      <rect x="530" y="55" width="30" height="35" fill="#1A5C3A" rx="2"/>
+      <rect x="565" y="45" width="20" height="45" fill="#1A5C3A" rx="2"/>
+      <!-- steam puffs -->
+      <ellipse cx="65" cy="28" rx="12" ry="8" fill="rgba(255,255,255,0.15)"/>
+      <ellipse cx="75" cy="20" rx="9" ry="6" fill="rgba(255,255,255,0.1)"/>
+      <ellipse cx="515" cy="33" rx="12" ry="8" fill="rgba(255,255,255,0.15)"/>
+      <!-- center label -->
+      <text x="320" y="30" text-anchor="middle" fill="#F5C842" font-size="14" font-family="'Playfair Display', serif" font-weight="700">🔬 Kota Nusantara Raya</text>
+      <text x="320" y="55" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11" font-family="'DM Sans', sans-serif">Tahun 2045 — Reaktor Uap dalam Bahaya</text>
+      <!-- molecule dots -->
+      <circle cx="240" cy="72" r="4" fill="#F5C842" opacity="0.6"/>
+      <circle cx="260" cy="65" r="3" fill="#F5C842" opacity="0.4"/>
+      <circle cx="280" cy="75" r="4" fill="#F5C842" opacity="0.7"/>
+      <circle cx="370" cy="68" r="3" fill="#F5C842" opacity="0.5"/>
+      <circle cx="390" cy="78" r="4" fill="#F5C842" opacity="0.6"/>
+      <circle cx="410" cy="65" r="3" fill="#F5C842" opacity="0.4"/>
+    </svg>`,
+  };
+
+  // Generic scene SVGs by id
+  const colors = ['#0F2D1A','#1A0F2D','#2D1A0F','#0F1A2D','#2D0F1A','#0F2D20','#1A2D0F','#2D200F'];
+  const color = colors[id % colors.length] || '#0F2D1A';
+  const icons = ['⚛️','🏭','⚡','🌡️','🔧','⚗️','🌀','🛡️'];
+  const icon = icons[id] || '🔬';
+
+  if(svgs[id]) return svgs[id];
+
+  // Generate scene molecules/particles
+  let dots = '';
+  for(let i=0;i<15;i++){
+    const x = 40 + (i*42) % 560;
+    const y = 15 + (i*17) % 60;
+    const r = 2 + (i%3);
+    dots += `<circle cx="${x}" cy="${y}" r="${r}" fill="#F5C842" opacity="${0.3+0.4*(i%3)/3}"/>`;
+    if(i%4===0) dots += `<line x1="${x}" y1="${y}" x2="${x+(i%20)-10}" y2="${y+(i%15)-7}" stroke="#F5C842" stroke-width="1" opacity="0.2"/>`;
+  }
+
+  const sceneNames = ['','Gerbang Reaktor','Ruang Generator','Ruang Kontrol Suhu','Ruang Pompa','Laboratorium Utama','Turbin Uap','Inti Reaktor'];
+
+  return `<svg viewBox="0 0 640 90" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="90" fill="${color}"/>
+    ${dots}
+    <text x="320" y="42" text-anchor="middle" fill="#F5C842" font-size="20" font-family="'DM Sans', sans-serif">${icon}</text>
+    <text x="320" y="62" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="12" font-family="'DM Sans', sans-serif" font-weight="600">${sceneNames[id] || ''}</text>
+    <text x="320" y="78" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="10" font-family="'DM Sans', sans-serif">Teori Kinetik Gas</text>
+  </svg>`;
+}
+
+// Start game
+renderScene(SCENES[0]);
+updateStats();
+</script>
+</body>
+</html>
